@@ -1,0 +1,74 @@
+﻿@model BooksStore.Models.TestViewModel
+
+@{
+    ViewBag.Title = "Test";
+}
+
+<h2>Test</h2>
+
+<h3>@Model.a.Name</h3>
+@Model.a.AuthorId
+
+<h3>@Model.c.Name</h3>
+@Model.c.CategoryId
+
+<h3>@Model.b.Title</h3>
+@Model.b.Author.Name
+
+<button class="btn btn-danger" id="test">Test</button>
+
+<div id="chartContainer"></div>
+
+@section scripts {
+    <!--Script references. -->
+    <!--The jQuery library is required and is referenced by default in _Layout.cshtml. -->
+    <!--Reference the SignalR library. -->
+    <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <!--SignalR script to update the chat page and send messages.-->
+    <script>
+        $(function () {
+            // Reference the auto-generated proxy for the hub.
+            var counter = $.connection.booksCounterHub;
+            // Create a function that the hub can call back to display messages.
+            counter.client.updateBookCounter = function (id, count) {
+                // Add the message to the page.
+                alert(count);
+            };
+
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                $("#test").click(function () {
+                    // Call the Send method on the hub.
+                    counter.server.hello("dupa");
+                });
+            });
+        });
+    </script>
+}
+
+<script src="~/Scripts/canvasjs.min.js"></script>
+<script type="text/javascript">
+
+window.onload = function () {
+	var chart = new CanvasJS.Chart("chartContainer", {
+		title:{
+			text: "Test"
+		},
+		data: [
+		{
+			// Change type to "doughnut", "line", "splineArea", etc.
+			type: "column",
+			dataPoints: [
+				{ label: "apple",  y: 10  },
+				{ label: "orange", y: 15  },
+				{ label: "banana", y: 25  },
+				{ label: "mango",  y: 30  },
+				{ label: "grape",  y: 28  }
+			]
+		}
+		]
+	});
+	chart.render();
+}
+</script>

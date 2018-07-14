@@ -1,0 +1,44 @@
+﻿@model IEnumerable<BooksStore.Models.Order>
+
+<h3>
+    Twoje zamówienia
+</h3>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table">
+            <tr>
+                <th>
+                    Nr zamówienia
+                </th>
+                <th>
+                    Data złożenia
+                </th>
+                <th>
+                    Cena
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.OrderId
+                    </td>
+                    <td>
+                        @item.OrderDate.ToString("d")
+                    </td>
+                    <td>
+                        @item.Total zł
+                    </td>
+
+                    <td>
+                        @Html.ActionLink("Szczegóły", "Details", new { id = item.OrderId }, new { @target = "blank" })
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+

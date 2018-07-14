@@ -1,0 +1,202 @@
+﻿@model IEnumerable<BooksStore.Models.ViewModels.BookGeneralViewModel>
+@{
+    ViewBag.Title = "Home Page";
+    var i = 0;
+}
+<h2>Witaj w naszej księgarni internetowej.</h2>
+
+<div class="alert alert-success" hidden>
+    Książka pomyślnie dodana do koszyka.
+</div>
+<div class="alert alert-danger" hidden>
+    Przepraszamy! Brak wybranej książki.
+</div>
+<div class="alert alert-info" hidden>
+    Przepraszamy! Brak wybranej książki.
+</div>
+
+<div>
+    <h3>Najnowsze książki</h3>
+    <ul class="books-list">
+        @foreach (var item in Model.Skip(5).Take(5))
+        {
+            <li id="book-@item.BookId">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="background-color: @item.CategoryColor;">
+                        @if (User.IsInRole("Admins"))
+                        {
+                            <a href="@Url.Action("Edit","Books",new { id = item.BookId})"><span class="glyphicon glyphicon-edit span-btn pull-left" data-toggle="tooltip" data-placement="top" title="Edytuj"></span></a>
+                            <span class="glyphicon glyphicon-remove span-btn pull-right remove-book" data-toggle="modal" data-target="#myModal" id="@item.BookId"></span>
+                        }
+                        @item.Category.Name
+                    </div>
+                    <div class="panel-body">
+                        @Html.ActionLink(@item.Title, "Details", "Books", new { id = item.BookId }, null)<br />
+                        <img src="~/@item.ImageUrl" /> <br />
+                        @Html.ActionLink(@item.Author.Name, "Index", "Books", new { authorId = item.Author.AuthorId }, null)
+                    </div>
+                    <div class="panel-footer">
+                        @item.Price zł
+                        <div class="pull-right">
+                            <span class="glyphicon glyphicon-shopping-cart span-btn" onclick="addToCart(@item.BookId)" data-toggle="tooltip" data-placement="top" title="Dodaj do koszyka"></span>
+                            <span class="id-@item.BookId" data-toggle="tooltip" data-placement="bottom" title="Liczba dostępnych książek">@item.Count</span>
+                        </div>
+                        <a href="#" class="pull-left" data-toggle="tooltip" data-placement="top" title="@item.Description"><span class="glyphicon glyphicon-search span-btn"></span></a>
+                    </div>
+                </div>
+            </li>
+        }
+
+    </ul>
+</div>
+
+<div>
+    <h3>Najczęściej kupowane książki</h3>
+    <ul class="books-list">
+        @foreach (var item in Model.Take(5))
+        {
+            <li id="book-@item.BookId">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="background-color: @item.CategoryColor;">
+                        @if (User.IsInRole("Admins"))
+                        {
+                            <a href="@Url.Action("Edit","Books",new { id = item.BookId})"><span class="glyphicon glyphicon-edit span-btn pull-left" data-toggle="tooltip" data-placement="top" title="Edytuj"></span></a>
+                            <span class="glyphicon glyphicon-remove span-btn pull-right remove-book" data-toggle="modal" data-target="#myModal" id="@item.BookId"></span>
+                        }
+                        @item.Category.Name
+                    </div>
+                    <div class="panel-body">
+                        @Html.ActionLink(@item.Title, "Details","Books", new { id = item.BookId }, null)<br />
+                        <img src="~/@item.ImageUrl" /> <br />
+                        @Html.ActionLink(@item.Author.Name, "Index","Books", new { authorId = item.Author.AuthorId }, null)
+                    </div>
+                    <div class="panel-footer">
+                        @item.Price zł
+                        <div class="pull-right">
+                            <span class="glyphicon glyphicon-shopping-cart span-btn" onclick="addToCart(@item.BookId)" data-toggle="tooltip" data-placement="top" title="Dodaj do koszyka"></span>
+                            <span class="id-@item.BookId" data-toggle="tooltip" data-placement="bottom" title="Liczba dostępnych książek">@item.Count</span>
+                        </div>
+                        <a href="#" class="pull-left" data-toggle="tooltip" data-placement="top" title="@item.Description"><span class="glyphicon glyphicon-search span-btn"></span></a>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<div>
+    <h3>Najczęściej oglądane książki</h3>
+    <ul class="books-list">
+        @foreach (var item in Model.Skip(10).Take(5))
+        {
+            <li id="book-@item.BookId">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="background-color: @item.CategoryColor;">
+                        @if (User.IsInRole("Admins"))
+                        {
+                            <a href="@Url.Action("Edit","Books",new { id = item.BookId})"><span class="glyphicon glyphicon-edit span-btn pull-left" data-toggle="tooltip" data-placement="top" title="Edytuj"></span></a>
+                            <span class="glyphicon glyphicon-remove span-btn pull-right remove-book" data-toggle="modal" data-target="#myModal" id="@item.BookId"></span>
+                        }
+                        @item.Category.Name
+                    </div>
+                    <div class="panel-body">
+                        @Html.ActionLink(@item.Title, "Details", "Books", new { id = item.BookId }, null)<br />
+                        <img src="~/@item.ImageUrl" /> <br />
+                        @Html.ActionLink(@item.Author.Name, "Index", "Books", new { authorId = item.Author.AuthorId }, null)
+                    </div>
+                    <div class="panel-footer">
+                        @item.Price zł
+                        <div class="pull-right">
+                            <span class="glyphicon glyphicon-shopping-cart span-btn" onclick="addToCart(@item.BookId)" data-toggle="tooltip" data-placement="top" title="Dodaj do koszyka"></span>
+                            <span class="id-@item.BookId" data-toggle="tooltip" data-placement="bottom" title="Liczba dostępnych książek">@item.Count</span>
+                        </div>
+                        <a href="#" class="pull-left" data-toggle="tooltip" data-placement="top" title="@item.Description"><span class="glyphicon glyphicon-search span-btn"></span></a>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Potwierdzenie usunięcia.</h4>
+            </div>
+            <div class="modal-body">
+                <p>Czy na pewno chcesz usunąć wybraną książkę?</p>
+                <span id="bookId" hidden></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="removeBook(this.id)" data-dismiss="modal">Tak</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Nie</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script type="text/javascript">
+    function addToCart(id) {
+        var actualCount = parseInt($(".id-" + id).text());
+        if(actualCount > 0){
+            var url = "/Cart/AddBooksToCart"
+            $.ajax({
+                url: url,
+                data: { id: id, count : 1 }, // optional data
+                type: "GET",
+                success: function (data) {
+                    var error = data.ErrorMessage;
+                    if (error == null) {
+                        $("#cartCount").text(data.ItemsCount);
+                        $(".alert-success").show();
+                        setTimeout(function () { $(".alert-success").hide(); }, 2000);
+                        //$("#" + id).text(data.BooksCount);
+                    } else {
+                        $(".alert-info").text(error);
+                        $(".alert-info").show();
+                        setTimeout(function () { $(".alert-info").hide(); }, 2000);
+                    }
+                }
+            });
+        } else
+        {
+            $(".alert-danger").show();
+            setTimeout(function () { $(".alert-danger").hide(); }, 2000);
+        }
+    }
+    function removeBook(id) {
+        var url = "/Books/Remove"
+        $.ajax({
+            url: url,
+            data: { id: id },
+            type: "GET",
+            success: function () {
+                $("#book-" + id).remove();
+                $(".alert-success").text("Książka usunięta");
+                $(".alert-success").show();
+            }
+        });
+        //alert(id);
+    }
+
+    $(document).on("click", ".remove-book", function () {
+        var bookId = $(this).prop("id");
+        $(".modal-footer .btn-success").prop('id', bookId);
+    });
+    //SingalR
+    $(function () {
+        // Reference the auto-generated proxy for the hub.
+        var counter = $.connection.booksCounterHub;
+        counter.client.updateBookCounter = function (id, count) {
+            $(".id-" + id).text(count);
+        };
+        // Start the connection.
+        $.connection.hub.start()
+    });
+</script>

@@ -1,0 +1,66 @@
+﻿@model IEnumerable<BooksStore.Models.ViewModels.BookGeneralViewModel>
+@{ 
+    var catId = -1;
+    var autId = -1;
+    var sString = "";
+}
+@if (ViewBag.ListType.Contains("autor"))
+{
+    autId = Model.FirstOrDefault().Author.AuthorId;
+}
+@if (ViewBag.ListType.Contains("gatunku"))
+{
+    catId = Model.FirstOrDefault().Category.CategoryId;
+}
+@if (ViewBag.ListType.Contains("wyszukiwania"))
+{
+    sString = ViewBag.SearchString;
+}
+
+<div class="sort">
+    <h4>Sortowanie:
+        @if (ViewBag.SortOrder == "TITLE")
+        {
+            @Ajax.ActionLink("Nazwa od Z do A", "Index", new { sortOrder = "TITLE_DESC", authorId = autId, categoryId = catId, searchString = sString }, new AjaxOptions { UpdateTargetId ="books-list-partial" })
+            <span class="glyphicon glyphicon-arrow-down"></span>
+        }
+        else
+        {
+            @Ajax.ActionLink("Nazwa od A do Z", "Index", new { sortOrder = "TITLE", authorId = autId, categoryId = catId, searchString = sString }, new AjaxOptions { UpdateTargetId = "books-list-partial" })
+            <span class="glyphicon glyphicon-arrow-up"></span>
+        }
+    | 
+    @if (ViewBag.SortOrder == "PRICE")
+    {
+        @Ajax.ActionLink("Cena malejąco", "Index", new { sortOrder = "PRICE_DESC", authorId = autId, categoryId = catId, searchString = sString }, new AjaxOptions { UpdateTargetId = "books-list-partial" })
+        <span class="glyphicon glyphicon-arrow-down"></span>
+    }
+    else
+    {
+        @Ajax.ActionLink("Cena rosnąco", "Index", new { sortOrder = "PRICE", authorId = autId, categoryId = catId, searchString = sString }, new AjaxOptions { UpdateTargetId = "books-list-partial" })
+        <span class="glyphicon glyphicon-arrow-up"></span>
+    }
+    | 
+    @if (ViewBag.SortOrder == "RELEASEDATE")
+    {
+        @Ajax.ActionLink("Najmłodsze", "Index", new { sortOrder = "RELEASEDATE_DESC", authorId = autId, categoryId = catId, searchString = sString }, new AjaxOptions { UpdateTargetId = "books-list-partial" })
+        <span class="glyphicon glyphicon-arrow-down"></span>
+    }
+    else
+    {
+        @Ajax.ActionLink("Najstarsze", "Index", new { sortOrder = "RELEASEDATE", authorId = autId, categoryId = catId, searchString = sString }, new AjaxOptions { UpdateTargetId = "books-list-partial" })
+        <span class="glyphicon glyphicon-arrow-up"></span>
+    }
+    | 
+    @if (ViewBag.SortOrder == "LENGTH")
+    {
+        @Ajax.ActionLink("Najdłuższe", "Index", new { sortOrder = "LENGTH_DESC", authorId = autId, categoryId = catId, searchString = sString }, new AjaxOptions { UpdateTargetId = "books-list-partial" })
+        <span class="glyphicon glyphicon-arrow-down"></span>
+    }
+    else
+    {
+        @Ajax.ActionLink("Najkrótsze", "Index", new { sortOrder = "LENGTH", authorId = autId, categoryId = catId, searchString = sString }, new AjaxOptions { UpdateTargetId = "books-list-partial" })
+        <span class="glyphicon glyphicon-arrow-up"></span>
+    } 
+    </h4>
+</div>

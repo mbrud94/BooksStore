@@ -1,0 +1,172 @@
+﻿@model BooksStore.Models.Book
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Sczegóły książki @Html.DisplayFor(model => model.Title)</h2>
+@if (User.IsInRole("Admins"))
+{
+    <a class="btn btn-success" href="@Url.Action("Edit",new { id = Model.BookId})"><span class="glyphicon glyphicon-edit span-btn pull-left" ></span> Edytuj</a>
+    <button class="btn btn-danger" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-remove"></span> Usuń</button>
+}
+
+
+<div class="alert alert-info" hidden>
+   
+</div>
+<div class="alert alert-success" hidden>
+
+</div>
+<hr />
+<div class="row">
+    <div class="col-sm-2">
+        <img src="~/@Model.ImageUrl" />
+    </div>
+    <div class="col-sm-3">
+        <table class="table">
+            <tr>
+                <td>Autor:</td>
+                <td><b>@Model.Author.Name</b></td>
+            </tr>
+            <tr>
+                <td>Gatunek:</td>
+                <td><b>@Model.Category.Name</b></td>
+            </tr>
+            <tr>
+                <td>Liczba stron:</td>
+                <td><b>@Model.PageCount</b></td>
+            </tr>
+            <tr>
+                <td>Data wydania:</td>
+                <td><b>@Model.ReleaseDate.ToString("d")</b></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-sm-2 col-sm-offset-5">
+        <h3 style="margin-top:0px;">Cena @Model.Price zł</h3>
+        <div class="alert alert-danger" hidden>
+            Brak towaru!
+        </div>
+        @using (Ajax.BeginForm("AddBooksToCart", "Cart", new {id=Model.BookId},new AjaxOptions {
+            OnSuccess = "bookAdded",
+            HttpMethod = "GET",
+        }))
+        {
+        <label for="count">Liczba książek:</label>
+        <div class="input-group">
+            <input type="number" class="form-control" value="1" min="1" max="@Model.Count" onkeydown="return false" name="count" id="count" style="max-width:100%;">
+            <div class="input-group-addon">z <span id="countInfo">@Model.Count</span></div>
+        </div> <br />
+            <button type="submit" class="btn btn-success">Dodaj do koszyka <span class="glyphicon glyphicon-shopping-cart"></span></button>
+        }
+    </div>
+ </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Opis</h3>
+            <p>@Model.Description</p>
+        </div>
+    </div>
+
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Potwierdzenie usunięcia.</h4>
+            </div>
+            <div class="modal-body">
+                <p>Czy na pewno chcesz usunąć wybraną książkę?</p>
+                <span id="bookId" hidden></span>
+            </div>
+            <div class="modal-footer">
+                <button  id="@Model.BookId" type="button" class="btn btn-success" onclick="removeBook(this.id)" data-dismiss="modal">Tak</button>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Nie</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script type="text/javascript">
+    var bookAdded = function (data)
+    {
+        var error = data.ErrorMessage;
+        if (error == null) {
+            $("#cartCount").text(data.ItemsCount);
+            var count = data.BooksCount;
+            /*$("#countInfo").text(count);
+            $("#count").attr("max", count);
+            $("#count").prop("value", 1);
+            if (count == 0) {
+                $("#count").prop("disabled", true);
+                $(".col-sm-2 .btn").eq(0).addClass("disabled");
+                $(".alert-danger").show();
+            }*/
+        } else {
+            $(".alert-info").text(error);
+            $(".alert-info").show();
+        }
+    }
+
+    $(document).ready(function () {
+        var count = $("#countInfo").text();
+        if(count == 0)
+        {
+            $("#count").prop("disabled", true);
+            $(".col-sm-2 .btn").eq(0).addClass("disabled");
+            $(".alert-danger").show();
+        }
+        else
+        {
+            $("#count").prop("disabled", false);
+        }
+    });
+
+    function removeBook(id){
+        var url = "/Books/Remove"
+        $.ajax({
+            url: url,
+            data: { id: id},
+            type: "GET",
+            success: function () {
+                $(".alert-success").text("Książka usunięta");
+                $(".alert-success").show();
+                $("#count").prop("disabled", true);
+                $(".btn").addClass("disabled");
+            }
+        });
+        //alert(id);
+    }
+    //SignalR
+    $(function () {
+        // Reference the auto-generated proxy for the hub.
+        var counter = $.connection.booksCounterHub;
+        var currId = @Model.BookId;
+        counter.client.updateBookCounter = function (id, count) {
+            if (id == currId) {
+                $("#countInfo").text(count);
+                $("#count").attr("max", count);
+                $("#count").prop("value", 1);
+                if (count == 0) {
+                    $("#count").prop("disabled", true);
+                    $(".col-sm-2 .btn").eq(0).addClass("disabled");
+                    $(".alert-danger").show();
+                }
+                else{
+                    $("#count").prop("disabled", false);
+                    $(".col-sm-2 .btn").eq(0).removeClass("disabled");
+                    $(".alert-danger").hide();
+                }
+            }
+            
+        };
+        // Start the connection.
+        $.connection.hub.start()
+    });
+</script>

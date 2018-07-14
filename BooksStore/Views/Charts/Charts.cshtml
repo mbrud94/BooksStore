@@ -1,0 +1,154 @@
+﻿
+@{
+    ViewBag.Title = "Charts";
+}
+
+<h2>Statystyki</h2>
+
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <span class="glyphicon glyphicon-collapse-down"></span>Najczęściej oglądane książki
+                </a>
+            </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse">
+            <div class="panel-body" id="chart1" style="height:400px;">
+                Wykres 1
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                    <span class="glyphicon glyphicon-collapse-down"></span>Najczęsciej kupowane książki
+                </a>
+            </h4>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body" id="chart2" style="height:400px;">
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                    <span class="glyphicon glyphicon-collapse-down"></span>Gatunki książek
+                </a>
+            </h4>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body" id="chart3" style="height:400px;">
+                Wykres 3
+            </div>
+        </div>
+    </div>
+</div> 
+
+<script src="~/Scripts/canvasjs.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var url = "/Charts/ChartData"
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function (data) {
+                categoryChart(data);
+                topVisitedChart(data);
+                bestsellersChart(data);
+            }
+        });
+    });
+
+    function categoryChart(data) {
+        var dataPoints = [];
+        for (var i = 0; i < data.CategoryData.length; i++)
+        {
+            dataPoints.push({ label: data.CategoryData[i].Name, y: data.CategoryData[i].Count });
+        }
+        var chart = new CanvasJS.Chart("chart3", {
+            title: {
+                text: "Gatunki"
+            },
+            height: 350,
+            //width: 700,
+
+            theme: "theme1",
+            backgroundColor: "#F5DEB3",
+            data: [
+            {
+                type: "pie",
+                dataPoints: []
+            }
+            ]
+        });
+        chart.options.data[0].dataPoints = dataPoints;
+        chart.render();
+    }
+
+    function topVisitedChart(data) {
+        var dataPoints = [];
+        for (var i = 0; i < data.TopVisitedData.length; i++) {
+            dataPoints.push({ label: data.TopVisitedData[i].Name, y: data.TopVisitedData[i].Count });
+        }
+        var chart = new CanvasJS.Chart("chart1", {
+            title: {
+                text: "Najczęściej oglądane książki"
+            },
+            axisX: {
+                labelMaxWidth: 150,
+                labelWrap: false,   // change it to false
+                interval: 1,
+                //prefix: "Very long label "
+            },
+            height: 350,
+            width: 800,
+            dataPointMaxWidth: 80,
+            theme: "theme1",
+            backgroundColor: "#F5DEB3",
+            data: [
+            {
+                type: "column",
+                dataPoints: []
+            }
+            ]
+        });
+        chart.options.data[0].dataPoints = dataPoints;
+        chart.render();
+    }
+
+    function bestsellersChart(data) {
+        var dataPoints = [];
+        for (var i = 0; i < data.BestsellersData.length; i++) {
+            dataPoints.push({ label: data.BestsellersData[i].Name, y: data.BestsellersData[i].Count });
+        }
+        var chart = new CanvasJS.Chart("chart2", {
+            title: {
+                text: "Najczęściej kupowane książki"
+            },
+            axisX: {
+                labelMaxWidth: 150,
+                labelWrap: false,   // change it to false
+                interval: 1,
+                //prefix: "Very long label "
+            },
+            height: 350,
+            width: 800,
+            dataPointMaxWidth: 80,
+            theme: "theme1",
+            backgroundColor: "#F5DEB3",
+            data: [
+            {
+                type: "column",
+                dataPoints: []
+            }
+            ]
+        });
+        chart.options.data[0].dataPoints = dataPoints;
+        chart.render();
+    }
+</script>

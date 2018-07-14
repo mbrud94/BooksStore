@@ -1,0 +1,87 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.books-list li{
+    display: inline-block;
+    width: 200px;
+    text-align: center;
+}
+
+.books-list img{
+   height: 150px;
+   max-width: 120px;
+}
+
+.books-list btn-cart{
+    float: right;
+}
+
+.span-btn:hover{
+    cursor:pointer;
+}
+
+.books-list a{
+    color: inherit;
+}
+
+.tooltip > .tooltip-inner {
+            /*background-color: #73AD21;
+            color: #FFFFFF;
+            border: 1px solid green;
+            padding: 5px;
+            font-size: 12px;
+            text-align: left;    */        
+ }
+
+.jumbotron{
+    background-image:url(banner2.png);
+    background-size:cover;
+    height: 350px;
+}
+
+ul.nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;    
+}
+
+.navbar .dropdown-menu {
+ margin-top: 0px;
+}
+.table{
+    font-size: 16px;
+}
+
+.create-book input, select, textarea{
+    max-width: 100%;
+
+}
+
+.input-group[class*="col-"] {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.create-book .input-group-addon {
+    padding: 0px 0px 0px 0px;
+}

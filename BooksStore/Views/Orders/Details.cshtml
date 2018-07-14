@@ -1,0 +1,127 @@
+﻿@model BooksStore.Models.Order
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/Content/OldCss/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <title>Details</title>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h2>Szczegóły zamówienia <br/><small>Zamówienie nr @Model.OrderId</small></h2>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <h4>Odbiorca</h4>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Imię i nazwisko
+                    </dt>
+                    <dd>
+                        @Model.FirstName @Model.LastName
+                    </dd>
+                    <dt>
+                        Adres
+                    </dt>
+                    <dd>
+                        @Model.Address<br />
+                        @Model.PostalCode @Model.City
+                    </dd>
+                </dl> 
+            </div>
+            <div class="col-xs-4 col-xs-offset-6 text-right">
+                <h4>Podsumowanie</h4>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Data złożenia
+                    </dt>
+                    <dd>
+                        @Model.OrderDate.ToLongDateString()<br />
+                        @Model.OrderDate.ToShortTimeString()
+                    </dd>
+                    <dt>
+                        Liczba przedmiotów
+                    </dt>
+                    <dd>
+                        @{var sum = Model.OrderDetails.Sum(od => od.Count);}
+                        @sum
+                    </dd>
+                    <dt>
+                        Łączny koszt
+                    </dt>
+                    <dd>
+                        @Model.Total zł
+                    </dd>
+                </dl> 
+            </div>
+        </div>
+
+        <h4>Pozycje zamówienia</h4>
+        <table class="table">
+            <tr>
+                <th>
+                    
+                </th>
+                <th>
+                    Tytuł
+                </th>
+                <th>
+                    Autor
+                </th>
+                <th>
+                    Gatunek
+                </th>
+                <th>
+                    Cena za sztukę
+                </th>
+                <th>
+                    Liczba sztuk
+                </th>
+                <th>
+                    Łączna cena
+                </th>
+            </tr>
+
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+                    <td>
+                        @{var id = Model.OrderDetails.IndexOf(item)+1;}
+                        @id.
+                    </td>
+                    <td>
+                        @item.Book.Title
+                    </td>
+                    <td>
+                        @item.Book.Author.Name
+                    </td>
+                    <td>
+                        @item.Book.Category.Name
+                    </td>
+                    <td>
+                        @item.UnitPrice zł
+                    </td>
+                    <td>
+                        @item.Count
+                    </td>
+                    <td>
+                        @{var total = item.Count * item.UnitPrice; }
+                        @total zł
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</body>
+</html>

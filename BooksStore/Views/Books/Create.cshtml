@@ -1,0 +1,147 @@
+﻿@model BooksStore.Models.Book
+
+@{
+    ViewBag.Title = "Create";
+}
+@if (!ViewBag.EditMode)
+{
+<h2>Dodaj nową książkę</h2>
+}
+else
+{
+    <h2>Edycja książki</h2>
+}
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.Message
+    </div>
+}
+@using (Html.BeginForm(ViewBag.EditMode ? "Edit" : "Create", "Books", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal create-book">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div id="categoriesSelect">
+                    @{Html.RenderAction("CategoriesSelectList", "Categories", new { selectedId = Model.CategoryId });}
+                </div>
+
+                <div id="authorsSelect">
+                    @{Html.RenderAction("AuthorsSelectList", "Authors", new { selectedId = Model.AuthorId});}
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 input-group">
+                        @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+                        <div class="input-group-addon" style="width:10%;">
+                            <span>zł</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <textarea id="Description" style="width: 100%;" rows="5" class="form-control"></textarea>
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-5 col-md-offset-2">
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ImageUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 input-group">
+                        @Html.EditorFor(model => model.ImageUrl, new { htmlAttributes = new { @class = "form-control", @onkeydown = "return false" } })
+                        <div class="input-group-addon">
+                            <label class="btn btn-default">
+                                <input type="file" id="file" style="display:none;" name="file" />
+                                <span class="">Przeglądaj</span>
+                            </label>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.ImageUrl, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PageCount, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.PageCount, new { htmlAttributes = new { @class = "form-control", @value = 0, @min = 0 } })
+                        @Html.ValidationMessageFor(model => model.PageCount, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ReleaseDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class='col-md-10'>
+                        <input type='text' class="form-control" id='datetimepicker1' onkeydown="return false" name="ReleaseDate" value="@Model.ReleaseDate.ToString("dd/MM/yyyy")" />
+                        @Html.ValidationMessageFor(model => model.ReleaseDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Count, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Count, new { htmlAttributes = new { @class = "form-control", @type = "number", @value = 10, @min = 0 } })
+                        @Html.ValidationMessageFor(model => model.Count, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                @if (!ViewBag.EditMode)
+                {
+                    <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Dodaj</button>
+                }
+                else
+                {
+                    @Html.HiddenFor(model => model.BookId)
+                    <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save"></span> Zapisz</button>
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+}
+
+
+
+
+
+
+
+<script type="text/javascript">
+    $('input[name="file"]').change(function () {
+        var fileName = $(this).val();
+        $("#ImageUrl").val(fileName);
+    });
+
+</script>

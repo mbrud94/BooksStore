@@ -1,0 +1,29 @@
+﻿@model IEnumerable<BooksStore.Models.ViewModels.BookGeneralViewModel>
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "BooksList";
+}
+
+<h2>@ViewBag.ListType 
+  @if (ViewBag.ListType.Contains("autor"))
+  {
+        @Model.FirstOrDefault().Author.Name
+  }
+  @if (ViewBag.ListType.Contains("gatunku"))
+  {
+        @Model.FirstOrDefault().Category.Name
+  }
+</h2>
+@if(User.IsInRole("Admins"))
+{
+<a href="/Books/Create" class="btn btn-success"><span class="glyphicon glyphicon-plus"></span> Dodaj książkę</a>
+}
+<div id="books-list-partial">
+    @{Html.RenderPartial("BooksListPartial", Model);}
+</div>
+
+
+
+
+
+

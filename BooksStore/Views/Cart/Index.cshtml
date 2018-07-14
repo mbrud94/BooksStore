@@ -1,0 +1,111 @@
+﻿@model BooksStore.Models.ViewModels.CartDetailsViewModel
+
+@{
+    ViewBag.Title = "Index";
+    
+}
+
+<h2>Twój koszyk.</h2>
+<p>
+    Liczba tytułów: <span id="totalBooksCount">@Model.TotalBooksCount</span><br />
+    Liczba sztuk: <span id="totalItemsCount">@Model.TotalItemsCount</span><br />
+    Łączna cena: <span id="totalPrice">@Model.TotalPrice</span> zł
+</p>
+<div class="buttons">
+@Ajax.ActionLink("Usuń wszystko", "ClearCart", null, new AjaxOptions { HttpMethod = "GET", OnSuccess ="clearCart"}, new { @class = "btn btn-success" })
+@Html.ActionLink("Złóż zamówienie", "CreateOrder", "Orders",null,new { @class = "btn btn-success" })
+ </div>
+<br />
+<div class="alert alert-info" hidden>
+    Twój koszyk jest obecnie pusty
+</div>
+<div id="itemsList">
+@foreach (var item in Model.CartItems)
+{
+    
+    <div class="row" id="book-@item.BookId">
+        <hr />
+        <div class="col-sm-2">
+            <img src="~/@item.ImgUrl" />
+        </div>
+        <div class="col-sm-3">
+            <table class="table">
+                <tr>
+                    <td>Tytuł:</td>
+                    <td><b>@Html.ActionLink(@item.BookTitle,"Details","Books", new {id = item.BookId }, new { @style ="color: inherit; text-decoration: none;"})</b></td>
+                </tr>
+                <tr>
+                    <td>Gatunek:</td>
+                    <td><b>@item.BookCategory</b></td>
+                </tr>
+                <tr>
+                    <td>Autor:</td>
+                    <td><b>@item.BookAuthor</b></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-3 col-sm-offset-4">
+            <table class="table">
+                <tr>
+                    <td>Ilość:</td>
+                    <td><b id="itemsCount">@item.ItemsCount</b></td>
+                </tr>
+                <tr>
+                    <td>Cena za sztukę:</td>
+                    <td><b>@item.ItemPrice zł</b></td>
+                </tr>
+                <tr>
+                    <td>Łączna cena:</td>
+                    <td><b id="itemTotalPrice">@item.TotalPrice zł</b></td>
+                </tr>
+            </table>
+            @Ajax.ActionLink("Usuń", "RemoveBookFromCart", new {bookId = item.BookId }, new AjaxOptions { HttpMethod = "GET", OnSuccess = "removeBook" }, new { @class = "btn btn-danger pull-right" })
+        </div>
+    </div>
+
+}
+
+</div>
+
+<script type="text/javascript">
+    var clearCart = function () {
+        $("#itemsList").text("");
+        $("#cartCount").text(0);
+        $(".alert-info").show();
+        $("#totalBooksCount").text(0);
+        $("#totalItemsCount").text(0);
+        $("#totalPrice").text(0);
+        $(".buttons .btn").addClass("disabled");
+    }
+
+    var removeBook = function(data){
+        $("#cartCount").text(data.TotalItemsCount);
+        $("#totalBooksCount").text(data.TotalBooksCount);
+        $("#totalItemsCount").text(data.TotalItemsCount);
+        $("#totalPrice").text(data.TotalPrice);
+        var divId = "book-" + data.CartItems[0].BookId;
+        var removedBookCount = data.CartItems[0].ItemsCount;
+        if(removedBookCount == 0)
+        {
+            $("#"+divId).remove();
+        }
+        else
+        {
+            $("#" + divId + " #itemsCount").text(removedBookCount);
+            $("#" + divId + " #itemTotalPrice").text(data.CartItems[0].TotalPrice);
+        }
+        if(data.TotalItemsCount == 0)
+        {
+            $(".alert-info").show();
+            $(".buttons .btn").addClass("disabled");
+        }
+    }
+
+    $(document).ready(function () {
+        var count = @Model.TotalItemsCount;
+        if (count == 0) {
+            $(".alert-info").show();
+            $(".buttons .btn").addClass("disabled");
+        }
+    });
+</script>
